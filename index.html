@@ -1,149 +1,78 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="名古屋周辺の邦ロックライブ情報を探せるカレンダー。">
-<meta name="theme-color" content="#f7f8fa">
-<title>ライブカレンダー｜邦ロックのライブ情報</title>
+<meta name="description" content="愛知・岐阜のライブ情報を探せるカレンダー。">
+<title>ライブカレンダー</title>
 <style>
 :root {
   color-scheme: light;
-  --bg: #f7f8fa;
-  --panel: #ffffff;
-  --line: #e5e7eb;
-  --text: #22252a;
-  --muted: #777e87;
-  --accent: #9acb35;
+  --bg:#f7f8fa; --panel:#fff; --line:#e5e7eb;
+  --text:#22252a; --muted:#777e87; --accent:#9acb35;
 }
-* { box-sizing: border-box; }
+* {box-sizing:border-box}
 body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: -apple-system, BlinkMacSystemFont, "Noto Sans JP", sans-serif;
-  line-height: 1.6;
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Noto Sans JP",sans-serif;
+  line-height:1.6;
 }
 header {
-  padding: 28px max(6%, calc((100% - 1000px)/2));
-  border-bottom: 1px solid var(--line);
-  background: white;
+  padding:28px max(6%,calc((100% - 1000px)/2));
+  border-bottom:1px solid var(--line);background:white;
 }
-.logo {
-  font-size: 12px;
-  color: #83ad29;
-  letter-spacing: 3px;
+.logo {font-size:12px;color:#83ad29;letter-spacing:3px}
+h1 {font-size:clamp(27px,5vw,36px);margin:8px 0}
+header p,.muted {color:var(--muted);margin:0}
+main {max-width:1000px;margin:26px auto;padding:0 16px}
+.toolbar {display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+input,select,button {
+  font:inherit;border-radius:10px;padding:11px 13px;
+  border:1px solid #d8dce2;background:white;color:#25282d;
 }
-h1 {
-  font-size: clamp(27px, 5vw, 36px);
-  margin: 8px 0;
-}
-header p, .muted { color: var(--muted); margin: 0; }
-main {
-  max-width: 1000px;
-  margin: 26px auto;
-  padding: 0 16px;
-}
-.toolbar {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-bottom: 18px;
-}
-input, select, button {
-  font: inherit;
-  border-radius: 10px;
-  padding: 11px 13px;
-  border: 1px solid #d8dce2;
-  background: white;
-  color: #25282d;
-}
-input, select { min-width: 0; }
-#search { flex: 1; min-width: 180px; }
-button { cursor: pointer; }
-button:hover { border-color: var(--accent); }
-.primary {
-  background: var(--accent);
-  color: #18200e;
-  border: 0;
-  font-weight: bold;
-}
+input,select {min-width:0}
+#search {flex:1;min-width:180px}
+button {cursor:pointer}
+button:hover {border-color:var(--accent)}
+.primary {background:var(--accent);color:#18200e;border:0;font-weight:bold}
 .panel {
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  padding: 18px;
-  margin-bottom: 18px;
+  background:var(--panel);border:1px solid var(--line);
+  border-radius:16px;padding:18px;margin-bottom:18px;
 }
-.month {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 14px;
-}
-.month h2 { font-size: 20px; margin: 0; }
-.week, .days {
-  display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 5px;
-}
-.week div {
-  text-align: center;
-  color: var(--muted);
-  font-size: 12px;
-  padding: 5px;
-}
+.month {display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.month h2 {font-size:20px;margin:0}
+.week,.days {display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.week div {text-align:center;color:var(--muted);font-size:12px;padding:5px}
 .day {
-  min-height: 58px;
-  border: 1px solid #e2e5ea;
-  border-radius: 9px;
-  padding: 5px;
-  background: #f8f9fb;
-  text-align: left;
+  min-height:58px;border:1px solid #e2e5ea;border-radius:9px;
+  padding:5px;background:#f8f9fb;text-align:left;
 }
-.day.empty { visibility: hidden; }
-.day.today, .day.selected { border-color: var(--accent); }
-.day.selected { background: #eef6df; }
-.dot {
-  display: block;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent);
-  margin-top: 5px;
+.day.empty {visibility:hidden}
+.day.today,.day.selected {border-color:var(--accent)}
+.day.selected {background:#eef6df}
+.dot {display:block;width:6px;height:6px;border-radius:50%;background:var(--accent);margin-top:5px}
+.section-title {font-size:18px;margin:0 0 12px}
+.event {padding:12px 0;border-top:1px solid var(--line)}
+.event:first-child {border-top:0}
+.event strong {display:block}
+.meta,.empty-message {font-size:13px;color:var(--muted)}
+.event a {color:#729d20;font-size:13px}
+.source {font-size:11px;color:#888;margin-top:3px}
+.tag {
+  display:inline-block;font-size:11px;background:#f0f4e8;
+  padding:2px 7px;border-radius:5px;margin-top:5px;
 }
-.section-title { font-size: 18px; margin: 0 0 12px; }
-.event {
-  padding: 12px 0;
-  border-top: 1px solid var(--line);
-}
-.event:first-child { border-top: 0; }
-.event strong { display: block; }
-.meta, .empty-message {
-  font-size: 13px;
-  color: var(--muted);
-}
-.event a { color: #729d20; font-size: 13px; }
-.form-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-}
-.form-grid input, .form-grid select { width: 100%; }
-.wide { grid-column: 1 / -1; }
-footer {
-  text-align: center;
-  color: #888;
-  font-size: 12px;
-  padding: 24px;
-}
+.form-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.form-grid input,.form-grid select {width:100%}
+.wide {grid-column:1/-1}
+footer {text-align:center;color:#888;font-size:12px;padding:24px}
 @media(max-width:560px) {
-  header { padding: 22px 16px; }
-  .panel { padding: 13px; }
-  .day { min-height: 48px; padding: 4px; }
-  .form-grid { grid-template-columns: 1fr; }
-  .wide { grid-column: auto; }
+  header {padding:22px 16px}
+  .panel {padding:13px}
+  .day {min-height:48px;padding:4px}
+  .form-grid {grid-template-columns:1fr}
+  .wide {grid-column:auto}
 }
 </style>
 </head>
@@ -151,25 +80,33 @@ footer {
 <header>
   <div class="logo">LIVE INFORMATION</div>
   <h1>ライブカレンダー</h1>
+  <p>愛知・岐阜のライブ情報をチェック。</p>
 </header>
 
 <main>
   <div class="toolbar">
-    <input id="search" type="search" placeholder="アーティスト・会場名で検索" aria-label="検索">
-    <select id="area" aria-label="エリア">
+    <input id="search" type="search" placeholder="アーティスト・会場名で検索">
+    <select id="area">
       <option value="">すべてのエリア</option>
       <option>愛知</option>
       <option>岐阜</option>
-      <option>三重</option>
+    </select>
+    <select id="genre">
+      <option value="">すべてのジャンル</option>
+      <option>邦ロック</option>
+      <option>洋楽ロック</option>
+      <option>ポップス</option>
+      <option>アイドル</option>
+      <option>クラシック</option>
       <option>その他</option>
     </select>
   </div>
 
   <section class="panel">
     <div class="month">
-      <button id="prev" type="button">‹</button>
+      <button id="prev">‹</button>
       <h2 id="monthLabel"></h2>
-      <button id="next" type="button">›</button>
+      <button id="next">›</button>
     </div>
     <div class="week">
       <div>日</div><div>月</div><div>火</div>
@@ -180,109 +117,120 @@ footer {
 
   <section class="panel">
     <h2 class="section-title" id="listTitle">ライブ一覧</h2>
-    <div id="events" class="empty-message">現在、掲載中のライブ情報はありません。</div>
+    <div id="events" class="empty-message">ライブ情報を読み込んでいます。</div>
   </section>
 
   <section class="panel">
     <h2 class="section-title">ライブ情報を追加（この端末のみ）</h2>
     <p class="muted" style="font-size:13px;margin-bottom:12px">
-      追加した情報はこのブラウザ内に保存され、他の人の画面には反映されません。
+      手動で追加した情報は、このブラウザ内に保存されます。
     </p>
     <form id="eventForm" class="form-grid">
-      <input name="date" type="date" required aria-label="開催日">
-      <input name="artist" placeholder="アーティスト名" required>
+      <input name="date" type="date" required>
+      <input name="artist" placeholder="出演者" required>
       <input name="venue" placeholder="会場名" required>
       <select name="area" required>
         <option value="">エリアを選択</option>
         <option>愛知</option>
         <option>岐阜</option>
-        <option>三重</option>
+      </select>
+      <select name="genre">
+        <option value="その他">ジャンル</option>
+        <option>邦ロック</option>
+        <option>洋楽ロック</option>
+        <option>ポップス</option>
+        <option>アイドル</option>
+        <option>クラシック</option>
         <option>その他</option>
       </select>
-      <input name="time" placeholder="開場・開演（任意）">
-      <input name="url" type="url" placeholder="公式情報URL（任意）">
+      <input name="open" placeholder="開場時間（例 17:00）">
+      <input name="start" placeholder="開演時間（例 18:00）">
+      <input name="url" type="url" placeholder="公式情報URL">
       <button class="primary wide" type="submit">ライブを追加</button>
     </form>
   </section>
 </main>
 
-<footer>LIVE CALENDAR · 邦ロックライブ情報</footer>
+<footer>LIVE CALENDAR</footer>
 
 <script>
 (() => {
   const KEY = 'liveCalendarEventsV1';
   let events = [];
-
-  try {
-    events = JSON.parse(localStorage.getItem(KEY) || '[]');
-    if (!Array.isArray(events)) events = [];
-  } catch(e) {
-    events = [];
-  }
-
   let shown = new Date();
-  shown = new Date(shown.getFullYear(), shown.getMonth(), 1);
+  shown = new Date(shown.getFullYear(),shown.getMonth(),1);
   let selected = '';
 
   const $ = id => document.getElementById(id);
-  const pad = n => String(n).padStart(2, '0');
+  const pad = n => String(n).padStart(2,'0');
 
-  const safe = s => String(s).replace(/[&<>"']/g, c => ({
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#39;'
+  const safe = s => String(s ?? '').replace(/[&<>"']/g,c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
   }[c]));
+
+  // 日付・会場・出演者で重複を判定
+  function unique(list) {
+    const seen = new Set();
+    return list.filter(e => {
+      if (!e.date || !e.venue || !e.artist) return false;
+      if (!['愛知','岐阜'].includes(e.area)) return false;
+
+      const key = [
+        e.date,
+        e.venue.trim().toLowerCase(),
+        e.artist.trim().toLowerCase()
+      ].join('|');
+
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }
+
+  function saveLocal() {
+    const local = events.filter(e => e.manual);
+    localStorage.setItem(KEY,JSON.stringify(local));
+  }
 
   function filtered() {
     const q = $('search').value.trim().toLowerCase();
     const a = $('area').value;
+    const g = $('genre').value;
 
     return events.filter(e =>
-      (!q || (e.artist + ' ' + e.venue).toLowerCase().includes(q)) &&
-      (!a || e.area === a)
+      (!q || (e.artist+' '+e.venue).toLowerCase().includes(q)) &&
+      (!a || e.area === a) &&
+      (!g || e.genre === g)
     );
   }
 
   function calendar() {
     const y = shown.getFullYear();
     const m = shown.getMonth();
-    const first = new Date(y, m, 1).getDay();
-    const last = new Date(y, m + 1, 0).getDate();
+    const first = new Date(y,m,1).getDay();
+    const last = new Date(y,m+1,0).getDate();
     const now = new Date();
+    const today = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}`;
 
-    const today = [
-      now.getFullYear(),
-      pad(now.getMonth() + 1),
-      pad(now.getDate())
-    ].join('-');
+    $('monthLabel').textContent = `${y}年${m+1}月`;
 
-    $('monthLabel').textContent = y + '年' + (m + 1) + '月';
+    let html = '';
+    for(let i=0;i<first;i++) html += '<div class="day empty"></div>';
 
-    let h = '';
+    for(let d=1;d<=last;d++) {
+      const key = `${y}-${pad(m+1)}-${pad(d)}`;
+      const has = filtered().some(e => e.date === key);
 
-    for (let i = 0; i < first; i++) {
-      h += '<div class="day empty"></div>';
+      html += `<button type="button" class="day ${
+        key===today?'today ':''
+      }${key===selected?'selected':''}" data-date="${key}">
+        <span>${d}</span>${has?'<i class="dot"></i>':''}
+      </button>`;
     }
 
-    for (let d = 1; d <= last; d++) {
-      const k = y + '-' + pad(m + 1) + '-' + pad(d);
-      const has = filtered().some(e => e.date === k);
-
-      h += '<button type="button" class="day ' +
-        (k === today ? 'today ' : '') +
-        (k === selected ? 'selected' : '') +
-        '" data-date="' + k + '">' +
-        '<span>' + d + '</span>' +
-        (has ? '<i class="dot"></i>' : '') +
-        '</button>';
-    }
-
-    $('calendar').innerHTML = h;
-
+    $('calendar').innerHTML = html;
     $('calendar').querySelectorAll('[data-date]').forEach(b => {
-      b.addEventListener('click', () => {
+      b.addEventListener('click',() => {
         selected = b.dataset.date;
         calendar();
         renderEvents();
@@ -291,15 +239,15 @@ footer {
   }
 
   function renderEvents() {
-    const a = filtered()
+    const list = filtered()
       .filter(e => !selected || e.date === selected)
-      .sort((x, y) => x.date.localeCompare(y.date));
+      .sort((a,b) => a.date.localeCompare(b.date));
 
     $('listTitle').textContent = selected
-      ? selected.replaceAll('-', '/') + ' のライブ'
+      ? selected.replaceAll('-','/')+' のライブ'
       : 'ライブ一覧';
 
-    if (!a.length) {
+    if(!list.length) {
       $('events').className = 'empty-message';
       $('events').textContent = selected
         ? 'この日の掲載情報はありません。'
@@ -308,77 +256,105 @@ footer {
     }
 
     $('events').className = '';
+    $('events').innerHTML = list.map(e => `
+      <article class="event">
+        <strong>${safe(e.artist)}</strong>
+        <div class="meta">
+          ${safe(e.date)} · ${safe(e.area)} · ${safe(e.venue)}
+        </div>
+        <div class="meta">
+          ${e.open?'開場 '+safe(e.open):''}
+          ${e.start?' ／ 開演 '+safe(e.start):''}
+        </div>
+        ${e.genre?`<span class="tag">${safe(e.genre)}</span>`:''}
+        ${e.source?`<div class="source">情報元：${safe(e.source)}</div>`:''}
+        ${e.url && /^https?:\/\//i.test(e.url)
+          ? `<a href="${safe(e.url)}" target="_blank" rel="noopener noreferrer">公式情報を見る</a>`
+          : ''}
+      </article>
+    `).join('');
+  }
 
-    $('events').innerHTML = a.map(e =>
-      '<article class="event">' +
-      '<strong>' + safe(e.artist) + '</strong>' +
-      '<div class="meta">' +
-      safe(e.date) + ' · ' +
-      safe(e.area) + ' · ' +
-      safe(e.venue) +
-      (e.time ? ' · ' + safe(e.time) : '') +
-      '</div>' +
-      (e.url && /^https?:\/\//i.test(e.url)
-        ? '<a href="' + safe(e.url) +
-          '" target="_blank" rel="noopener noreferrer">公式情報を見る</a>'
-        : '') +
-      '</article>'
-    ).join('');
+  function refresh() {
+    calendar();
+    renderEvents();
   }
 
   $('prev').onclick = () => {
-    shown.setMonth(shown.getMonth() - 1);
-    calendar();
+    shown.setMonth(shown.getMonth()-1);
+    refresh();
   };
 
   $('next').onclick = () => {
-    shown.setMonth(shown.getMonth() + 1);
-    calendar();
+    shown.setMonth(shown.getMonth()+1);
+    refresh();
   };
 
-  $('search').oninput = () => {
-    calendar();
-    renderEvents();
-  };
-
-  $('area').onchange = () => {
-    calendar();
-    renderEvents();
-  };
+  $('search').oninput = refresh;
+  $('area').onchange = refresh;
+  $('genre').onchange = refresh;
 
   $('eventForm').onsubmit = e => {
     e.preventDefault();
-
     const f = new FormData(e.currentTarget);
 
-    const v = {
-      date: f.get('date'),
-      artist: f.get('artist').trim(),
-      venue: f.get('venue').trim(),
-      area: f.get('area'),
-      time: f.get('time').trim(),
-      url: f.get('url').trim()
+    const item = {
+      date:f.get('date'),
+      artist:f.get('artist').trim(),
+      venue:f.get('venue').trim(),
+      area:f.get('area'),
+      genre:f.get('genre'),
+      open:f.get('open').trim(),
+      start:f.get('start').trim(),
+      url:f.get('url').trim(),
+      source:'手動登録',
+      manual:true
     };
 
-    events.push(v);
+    const before = events.length;
+    events = unique([...events,item]);
 
-    try {
-      localStorage.setItem(KEY, JSON.stringify(events));
-    } catch(err) {
-      alert('保存できませんでした。ブラウザの設定を確認してください。');
+    if(events.length === before) {
+      alert('同じ日付・会場・出演者のライブが既に登録されています。');
       return;
     }
 
-    shown = new Date(v.date + 'T00:00:00');
-    selected = v.date;
-
+    saveLocal();
+    shown = new Date(item.date+'T00:00:00');
+    selected = item.date;
     e.currentTarget.reset();
-    calendar();
-    renderEvents();
+    refresh();
   };
 
-  calendar();
-  renderEvents();
+  async function loadEvents() {
+    let remote = [];
+    try {
+      const response = await fetch('./events.json?updated='+Date.now());
+      if(response.ok) {
+        const data = await response.json();
+        if(Array.isArray(data)) remote = data;
+      }
+    } catch(error) {
+      console.log('events.jsonはまだありません。');
+    }
+
+    let local = [];
+    try {
+      local = JSON.parse(localStorage.getItem(KEY)||'[]');
+      if(!Array.isArray(local)) local = [];
+    } catch(error) {
+      local = [];
+    }
+
+    events = unique([
+      ...remote.map(e => ({...e,manual:false})),
+      ...local.map(e => ({...e,manual:true}))
+    ]);
+
+    refresh();
+  }
+
+  loadEvents();
 })();
 </script>
 </body>
