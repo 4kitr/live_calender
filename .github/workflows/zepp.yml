@@ -1,1 +1,25 @@
+name: Zepp Nagoya Live Update
 
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 21 * * *"
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install libraries
+        run: pip install requests beautifulsoup4
+
+      - name: Run scraper
+        run: python zepp_nagoya.py
