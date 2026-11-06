@@ -1,49 +1,386 @@
 <!DOCTYPE html>
-
 <html lang="ja">
-
 <head>
-
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
-<meta name="description" content="名古屋・愛知・岐阜の邦ロックライブ情報を探せるライブカレンダー。">
-
+<meta name="description" content="名古屋・愛知・岐阜など東海エリアの邦ロックライブ情報を探せるライブカレンダー。">
+<meta name="theme-color" content="#f7f8fa">
 <title>ライブカレンダー｜邦ロックのライブ情報</title>
-
 <style>
+:root {
+  color-scheme: light;
+  --bg: #f7f8fa;
+  --panel: #ffffff;
+  --line: #e5e7eb;
+  --text: #22252a;
+  --muted: #777e87;
+  --accent: #9acb35;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Noto Sans JP", sans-serif;
+  line-height: 1.6;
+}
+header {
+  padding: 28px max(6%, calc((100% - 1000px)/2));
+  border-bottom: 1px solid var(--line);
+  background: white;
+}
+.logo {
+  font-size: 12px;
+  color: #83ad29;
+  letter-spacing: 3px;
+}
+h1 {
+  font-size: clamp(27px, 5vw, 36px);
+  margin: 8px 0;
+}
+header p, .muted { color: var(--muted); margin: 0; }
+main {
+  max-width: 1000px;
+  margin: 26px auto;
+  padding: 0 16px;
+}
+.toolbar {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+input, select, button {
+  font: inherit;
+  border-radius: 10px;
+  padding: 11px 13px;
+  border: 1px solid #d8dce2;
+  background: white;
+  color: #25282d;
+}
+input, select { min-width: 0; }
+#search { flex: 1; min-width: 180px; }
+button { cursor: pointer; }
+button:hover { border-color: var(--accent); }
+.primary {
+  background: var(--accent);
+  color: #18200e;
+  border: 0;
+  font-weight: bold;
+}
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 18px;
+  margin-bottom: 18px;
+}
+.month {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.month h2 { font-size: 20px; margin: 0; }
+.week, .days {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 5px;
+}
+.week div {
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+  padding: 5px;
+}
+.day {
+  min-height: 58px;
+  border: 1px solid #e2e5ea;
+  border-radius: 9px;
+  padding: 5px;
+  background: #f8f9fb;
+  text-align: left;
+}
+.day.empty { visibility: hidden; }
+.day.today, .day.selected { border-color: var(--accent); }
+.day.selected { background: #eef6df; }
+.dot {
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-top: 5px;
+}
+.section-title { font-size: 18px; margin: 0 0 12px; }
+.event {
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+}
+.event:first-child { border-top: 0; }
+.event strong { display: block; }
+.meta, .empty-message {
+  font-size: 13px;
+  color: var(--muted);
+}
+.event a { color: #729d20; font-size: 13px; }
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.form-grid input, .form-grid select { width: 100%; }
+.wide { grid-column: 1 / -1; }
+footer {
+  text-align: center;
+  color: #888;
+  font-size: 12px;
+  padding: 24px;
+}
+@media(max-width:560px) {
+  header { padding: 22px 16px; }
+  .panel { padding: 13px; }
+  .day { min-height: 48px; padding: 4px; }
+  .form-grid { grid-template-columns: 1fr; }
+  .wide { grid-column: auto; }
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">LIVE INFORMATION</div>
+  <h1>ライブカレンダー</h1>
+  <p>東海エリアを中心に、邦ロックのライブ情報をチェック。</p>
+</header>
 
-*{box-sizing:border-box}
+<main>
+  <div class="toolbar">
+    <input id="search" type="search" placeholder="アーティスト・会場名で検索" aria-label="検索">
+    <select id="area" aria-label="エリア">
+      <option value="">すべてのエリア</option>
+      <option>愛知</option>
+      <option>岐阜</option>
+      <option>三重</option>
+      <option>その他</option>
+    </select>
+  </div>
 
-body{margin:0;background:#101114;color:#f5f5f5;font-family:-apple-system,BlinkMacSystemFont,"Noto Sans JP",sans-serif}
+  <section class="panel">
+    <div class="month">
+      <button id="prev" type="button">‹</button>
+      <h2 id="monthLabel"></h2>
+      <button id="next" type="button">›</button>
+    </div>
+    <div class="week">
+      <div>日</div><div>月</div><div>火</div>
+      <div>水</div><div>木</div><div>金</div><div>土</div>
+    </div>
+    <div class="days" id="calendar"></div>
+  </section>
 
-header{padding:30px 6%;border-bottom:1px solid #303137}
+  <section class="panel">
+    <h2 class="section-title" id="listTitle">ライブ一覧</h2>
+    <div id="events" class="empty-message">現在、掲載中のライブ情報はありません。</div>
+  </section>
 
-.logo{font-size:12px;color:#b8f34a;letter-spacing:3px}
+  <section class="panel">
+    <h2 class="section-title">ライブ情報を追加（この端末のみ）</h2>
+    <p class="muted" style="font-size:13px;margin-bottom:12px">
+      追加した情報はこのブラウザ内に保存され、他の人の画面には反映されません。
+    </p>
+    <form id="eventForm" class="form-grid">
+      <input name="date" type="date" required aria-label="開催日">
+      <input name="artist" placeholder="アーティスト名" required>
+      <input name="venue" placeholder="会場名" required>
+      <select name="area" required>
+        <option value="">エリアを選択</option>
+        <option>愛知</option>
+        <option>岐阜</option>
+        <option>三重</option>
+        <option>その他</option>
+      </select>
+      <input name="time" placeholder="開場・開演（任意）">
+      <input name="url" type="url" placeholder="公式情報URL（任意）">
+      <button class="primary wide" type="submit">ライブを追加</button>
+    </form>
+  </section>
+</main>
 
-h1{font-size:32px;margin:10px 0}
+<footer>LIVE CALENDAR · 邦ロックライブ情報</footer>
 
-header p,.muted{color:#999}
+<script>
+(() => {
+  const KEY = 'liveCalendarEventsV1';
+  let events = [];
 
-main{max-width:1050px;margin:30px auto;padding:0 18px}
+  try {
+    events = JSON.parse(localStorage.getItem(KEY) || '[]');
+    if (!Array.isArray(events)) events = [];
+  } catch(e) {
+    events = [];
+  }
 
-.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px}
+  let shown = new Date();
+  shown = new Date(shown.getFullYear(), shown.getMonth(), 1);
+  let selected = '';
 
-input,select,button{font:inherit;border-radius:10px;padding:12px;border:1px solid #383a40;background:#1b1d22;color:white}
+  const $ = id => document.getElementById(id);
+  const pad = n => String(n).padStart(2, '0');
 
-input,select{min-width:0}
+  const safe = s => String(s).replace(/[&<>"']/g, c => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  }[c]));
 
-#search{flex:1;min-width:180px}
+  function filtered() {
+    const q = $('search').value.trim().toLowerCase();
+    const a = $('area').value;
 
-button{cursor:pointer}
+    return events.filter(e =>
+      (!q || (e.artist + ' ' + e.venue).toLowerCase().includes(q)) &&
+      (!a || e.area === a)
+    );
+  }
 
-button.primary{background:#b8f34a;color:#151515;border:0;font-weight:bold}
+  function calendar() {
+    const y = shown.getFullYear();
+    const m = shown.getMonth();
+    const first = new Date(y, m, 1).getDay();
+    const last = new Date(y, m + 1, 0).getDate();
+    const now = new Date();
 
-.panel{background:#191b20;border:1px solid #303137;border-radius:16px;padding:20px;margin-bottom:20px}
+    const today = [
+      now.getFullYear(),
+      pad(now.getMonth() + 1),
+      pad(now.getDate())
+    ].join('-');
 
-.month{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
+    $('monthLabel').textContent = y + '年' + (m + 1) + '月';
 
-.month button{padding:8px 14px}
+    let h = '';
 
-.week,.days{display:grid;grid-template-colum
+    for (let i = 0; i < first; i++) {
+      h += '<div class="day empty"></div>';
+    }
+
+    for (let d = 1; d <= last; d++) {
+      const k = y + '-' + pad(m + 1) + '-' + pad(d);
+      const has = filtered().some(e => e.date === k);
+
+      h += '<button type="button" class="day ' +
+        (k === today ? 'today ' : '') +
+        (k === selected ? 'selected' : '') +
+        '" data-date="' + k + '">' +
+        '<span>' + d + '</span>' +
+        (has ? '<i class="dot"></i>' : '') +
+        '</button>';
+    }
+
+    $('calendar').innerHTML = h;
+
+    $('calendar').querySelectorAll('[data-date]').forEach(b => {
+      b.addEventListener('click', () => {
+        selected = b.dataset.date;
+        calendar();
+        renderEvents();
+      });
+    });
+  }
+
+  function renderEvents() {
+    const a = filtered()
+      .filter(e => !selected || e.date === selected)
+      .sort((x, y) => x.date.localeCompare(y.date));
+
+    $('listTitle').textContent = selected
+      ? selected.replaceAll('-', '/') + ' のライブ'
+      : 'ライブ一覧';
+
+    if (!a.length) {
+      $('events').className = 'empty-message';
+      $('events').textContent = selected
+        ? 'この日の掲載情報はありません。'
+        : '現在、掲載中のライブ情報はありません。';
+      return;
+    }
+
+    $('events').className = '';
+
+    $('events').innerHTML = a.map(e =>
+      '<article class="event">' +
+      '<strong>' + safe(e.artist) + '</strong>' +
+      '<div class="meta">' +
+      safe(e.date) + ' · ' +
+      safe(e.area) + ' · ' +
+      safe(e.venue) +
+      (e.time ? ' · ' + safe(e.time) : '') +
+      '</div>' +
+      (e.url && /^https?:\/\//i.test(e.url)
+        ? '<a href="' + safe(e.url) +
+          '" target="_blank" rel="noopener noreferrer">公式情報を見る</a>'
+        : '') +
+      '</article>'
+    ).join('');
+  }
+
+  $('prev').onclick = () => {
+    shown.setMonth(shown.getMonth() - 1);
+    calendar();
+  };
+
+  $('next').onclick = () => {
+    shown.setMonth(shown.getMonth() + 1);
+    calendar();
+  };
+
+  $('search').oninput = () => {
+    calendar();
+    renderEvents();
+  };
+
+  $('area').onchange = () => {
+    calendar();
+    renderEvents();
+  };
+
+  $('eventForm').onsubmit = e => {
+    e.preventDefault();
+
+    const f = new FormData(e.currentTarget);
+
+    const v = {
+      date: f.get('date'),
+      artist: f.get('artist').trim(),
+      venue: f.get('venue').trim(),
+      area: f.get('area'),
+      time: f.get('time').trim(),
+      url: f.get('url').trim()
+    };
+
+    events.push(v);
+
+    try {
+      localStorage.setItem(KEY, JSON.stringify(events));
+    } catch(err) {
+      alert('保存できませんでした。ブラウザの設定を確認してください。');
+      return;
+    }
+
+    shown = new Date(v.date + 'T00:00:00');
+    selected = v.date;
+
+    e.currentTarget.reset();
+    calendar();
+    renderEvents();
+  };
+
+  calendar();
+  renderEvents();
+})();
+</script>
+</body>
+</html>
